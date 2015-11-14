@@ -1,0 +1,17 @@
+﻿@model AreaModel
+@using Nop.Admin.Models.FareTemplates
+@{
+    ViewBag.Title = "新增运费模板";
+}
+<link href="~/Content/2014.211/style/yfmb.css" rel="stylesheet" type="text/css">
+<script src="~/Content/2014.211/js/yfmb.js" type="text/javascript"></script>
+@using (Html.BeginForm())
+{
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-sales.png")" alt="" />
+            新增运费模板 @Html.ActionLink("(" + T("运费模板列表") + ")", "Index")
+        </div>
+    </div>
+    @Html.Partial("_CreateOrUpdate",Model)
+}

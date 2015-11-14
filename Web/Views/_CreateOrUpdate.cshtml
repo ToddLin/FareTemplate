@@ -1,0 +1,415 @@
+﻿@model AreaModel
+@using Nop.Admin.Models.FareTemplates
+<div id="postage-tpl">
+    <div class="setting">
+        <h2>新增运费模板 </h2>
+        <form method="post" id="J_TPLForm">
+            <ul>
+                <!--  模板名称设置  -->
+                <li class="form-elem">
+                    <span class="label-like" for="J_TemplateTitle">模板名称：</span>
+                    <input type="text" name="_fm.cr._0.t" value="" class="input-text input-address" autocomplete="off" id="J_TemplateTitle">
+                </li>
+                <!--  卖家地址设置  -->
+                <li class="form-elem">
+                    <span class="label-like">发货地址：</span>
+                    <span id="J_AddressChoose">
+                        <input type="text" name="txtAddress" value="" class="input-text input-address" autocomplete="off" id="txtAddress">
+                    </span>
+                </li>
+                <li class="form-elem">
+                    <span class="label-like">发货时间：</span>
+                    <span class="fare-time">
+                        <select name="consignDate" id="J_prescription">
+                            <option value="0">请选择..</option>
+                            <option value="4">4小时内</option>
+                            <option value="8">8小时内</option>
+                            <option value="12">12小时内</option>
+                            <option value="16">16小时内</option>
+                            <option value="20">20小时内</option>
+                            <option value="24">1天内</option>
+                            <option value="48">2天内</option>
+                        </select>
+                    </span>
+                    <span>如实设定宝贝的发货时间，不仅可避免发货咨询和纠纷，还能促进成交！</span>
+                </li>
+                <li class="form-elem J_Freight">
+                    <span class="label-like">是否包邮：</span>
+                    <span>
+                        <input type="radio" name="bearFreight" checked='checked' value="1" id="J_sellerBearFre">
+                        <label for="J_sellerBearFre">卖家承担运费</label>
+                        <input type="radio" name="bearFreight" value="0" id="J_buyerBearFre">
+                        <label for="J_buyerBearFre">自定义运费</label>
+                    </span>
+                </li>
+                <!--  记价方式设置  -->
+                <li class="form-elem calc-method">
+                    <span class="label-like">计价方式：</span>
+                    <span>
+                        <input type="radio" name="valuation" checked="" value="1" class="J_CalcRule" data-type="number" id="J_CalcRuleNumber">
+                        <label for="J_CalcRuleNumber">&nbsp;按件数</label>
+                    </span>
+                    <span>
+                        <input type="radio" name="valuation" value="2" class="J_CalcRule" data-type="weight" id="J_CalcRuleWeight">
+                        <label for="J_CalcRuleWeight">&nbsp;按重量</label>
+                    </span>
+                    <span>
+                        <input type="radio" name="valuation" value="3" class="J_CalcRule" data-type="volume" id="J_CalcRuleVolume">
+                        <label for="J_CalcRuleVolume">&nbsp;按体积</label>
+                    </span>
+                </li>
+                <!-- 运费方式设置  -->
+                <li class="form-elem express">
+                    <span class="label-like">运送方式：</span>
+                    <p>
+                        <span class="field-note">除指定地区外，其余地区的运费采用“默认运费”</span>
+                    </p>
+                    <div class="section J_Section">
+                        <p>
+                            <input type="checkbox" name="tplType" value="0" id="J_DeliveryEXPRESS" class="J_Delivery J_pecify">
+                            <label for="J_DeliveryEXPRESS">赣农速配</label>
+                        </p>
+                        <div class="postage-detail J_PostageDetail hidden" data-delivery="express">
+                            <div class="entity">
+                                <div class="default J_DefaultSet">
+                                    默认运费：
+                                    <input type="text" name="number" value="1" data-field="start" class="input-text " autocomplete="off" maxlength="6" aria-label="默认运费"><label class="val_mode">件</label>内，
+                                    <input type="text" data-field="postage" name="number" value="" class="input-text " autocomplete="off" maxlength="6" aria-label="默认运费价格">元，每增加
+                                    <input type="text" name="number" data-field="plus" value="1" class="input-text " autocomplete="off" maxlength="6" aria-label="每加件"><label class="val_mode">件</label>，增加运费
+                                    <input type="text" name="number" data-field="postageplus" value="" class="input-text " autocomplete="off" maxlength="6" aria-label="加件运费">元
+                                    <div class="J_DefaultMessage"></div>
+                                </div>
+                                <div id="expressdiv" class="tbl-except hidden">
+                                    <table cellspacing="0" cellpadding="0" border="0">
+                                        <colgroup>
+                                            <col class="col-area">
+                                            <col class="col-start">
+                                            <col class="col-postage">
+                                            <col class="col-plus">
+                                            <col class="col-postageplus">
+                                            <col class="col-action">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>运送到</th>
+                                                <th>首<label name="lb">件(件)</label></th>
+                                                <th>首费(元)</th>
+                                                <th>续<label name="lb">件(件)</label></th>
+                                                <th>续费(元)</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody mode="express">
+                                            <tr data-group="n0">
+                                                <td class="cell-area">
+                                                    <a class="acc_popup edit J_EditArea" title="编辑运送区域" area-haspopup="true" area-controls="J_DialogArea" data-acc="event:enter" href="javascript:void('编辑')" onclick="CheckArea(this)">编辑</a>
+                                                    <div class="area-group">
+                                                        <p class="area" id="express0">未添加地区</p>
+                                                    </div>
+                                                    <input type="hidden" value="" name="express">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="首件" maxlength="6" autocomplete="off" value="1" data-field="start" name="number">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="首费" maxlength="6" autocomplete="off" value="" data-field="postage" name="number">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="续件" maxlength="6" autocomplete="off" value="1" data-field="plus" name="number">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="续费" maxlength="6" autocomplete="off" value="" data-field="postageplus" name="number">
+                                                </td>
+                                                <td>
+                                                    <a class="J_DeleteRule" href="javascript:void(0);" onclick="changerule(this,false)">删除</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tbl-attach">
+                                    <div class="J_SpecialMessage"></div>
+                                    <a href="javascript:void(0);" onclick="changerule(this,true)" class="J_AddRule">为指定地区城市设置运费</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section J_Section">
+                        <p>
+                            <input type="checkbox" name="tplType" value="1" id="J_DeliveryEMS" class="J_Delivery J_pecify">
+                            <label for="J_DeliveryEMS">EMS</label>
+                        </p>
+                        <div class="postage-detail J_PostageDetail hidden" data-delivery="ems">
+                            <div class="entity">
+                                <div class="default J_DefaultSet">
+                                    默认运费：
+                                    <input type="text" name="number" value="1" data-field="start" class="input-text " autocomplete="off" maxlength="6" aria-label="默认运费"><label class="val_mode">件</label>内，
+                                    <input type="text" data-field="postage" name="number" value="" class="input-text " autocomplete="off" maxlength="6" aria-label="默认运费价格">元，每增加
+                                    <input type="text" name="number" data-field="plus" value="1" class="input-text " autocomplete="off" maxlength="6" aria-label="每加件"><label class="val_mode">件</label>，增加运费
+                                    <input type="text" name="number" data-field="postageplus" value="" class="input-text " autocomplete="off" maxlength="6" aria-label="加件运费">元
+                                    <div class="J_DefaultMessage"></div>
+                                </div>
+                                <div id="emsdiv" class="tbl-except hidden">
+                                    <table cellspacing="0" cellpadding="0" border="0">
+                                        <colgroup>
+                                            <col class="col-area">
+                                            <col class="col-start">
+                                            <col class="col-postage">
+                                            <col class="col-plus">
+                                            <col class="col-postageplus">
+                                            <col class="col-action">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>运送到</th>
+                                                <th>首<label name="lb">件(件)</label></th>
+                                                <th>首费(元)</th>
+                                                <th>续<label name="lb">件(件)</label></th>
+                                                <th>续费(元)</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody mode="ems">
+                                            <tr data-group="n0">
+                                                <td class="cell-area">
+                                                    <a class="acc_popup edit J_EditArea" title="编辑运送区域" area-haspopup="true" area-controls="J_DialogArea" data-acc="event:enter" href="javascript:void('编辑')" onclick="CheckArea(this)">编辑</a>
+                                                    <div class="area-group">
+                                                        <p class="area" id="ems0">未添加地区</p>
+                                                    </div>
+                                                    <input type="hidden" value="" name="ems">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="首件" maxlength="6" autocomplete="off" value="1" data-field="start" name="number">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="首费" maxlength="6" autocomplete="off" value=" " data-field="postage" name="number">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="续件" maxlength="6" autocomplete="off" value="1" data-field="plus" name="number">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="续费" maxlength="6" autocomplete="off" value=" " data-field="postageplus" name="number">
+                                                </td>
+                                                <td>
+                                                    <a class="J_DeleteRule" href="javascript:void(0);" onclick="changerule(this,false)">删除</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tbl-attach">
+                                    <div class="J_SpecialMessage"></div>
+                                    <a href="javascript:void(0);" onclick="changerule(this,true)" class="J_AddRule">为指定地区城市设置运费</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section J_Section">
+                        <p>
+                            <input type="checkbox" name="tplType" value="2" id="J_DeliveryPOST" class="J_Delivery J_pecify">
+                            <label for="J_DeliveryPOST">快递</label>
+                        </p>
+                        <div class="postage-detail J_PostageDetail hidden" data-delivery="post">
+                            <div class="entity">
+                                <div class="default J_DefaultSet">
+                                    默认运费：
+                                    <input type="text" name="number" value="1" data-field="start" class="input-text " autocomplete="off" maxlength="6" aria-label="默认运费"><label class="val_mode">件</label>内，
+                                    <input type="text" data-field="postage" name="number" value="" class="input-text " autocomplete="off" maxlength="6" aria-label="默认运费价格">元，每增加
+                                    <input type="text" name="number" data-field="plus" value="1" class="input-text " autocomplete="off" maxlength="6" aria-label="每加件"><label class="val_mode">件</label>，增加运费
+                                    <input type="text" name="number" data-field="postageplus" value="" class="input-text " autocomplete="off" maxlength="6" aria-label="加件运费">元
+                                    <div class="J_DefaultMessage"></div>
+                                </div>
+                                <div id="postdiv" class="tbl-except hidden">
+                                    <table cellspacing="0" cellpadding="0" border="0">
+                                        <colgroup>
+                                            <col class="col-area">
+                                            <col class="col-start">
+                                            <col class="col-postage">
+                                            <col class="col-plus">
+                                            <col class="col-postageplus">
+                                            <col class="col-action">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>运送到</th>
+                                                <th>首<label name="lb">件(件)</label></th>
+                                                <th>首费(元)</th>
+                                                <th>续<label name="lb">件(件)</label></th>
+                                                <th>续费(元)</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody mode="post">
+                                            <tr data-group="n0">
+                                                <td class="cell-area">
+                                                    <a class="acc_popup edit J_EditArea" title="编辑运送区域" area-haspopup="true" area-controls="J_DialogArea" data-acc="event:enter" href="javascript:void('编辑')" onclick="CheckArea(this)">编辑</a>
+                                                    <div class="area-group">
+                                                        <p class="area" id="post0">未添加地区</p>
+                                                    </div>
+                                                    <input type="hidden" value="" name="post">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="首件" maxlength="6" autocomplete="off" value="1" data-field="start" name="number">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="首费" maxlength="6" autocomplete="off" value=" " data-field="postage" name="number">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="续件" maxlength="6" autocomplete="off" value="1" data-field="plus" name="number">
+                                                </td>
+                                                <td>
+                                                    <input class="input-text " type="text" aria-label="续费" maxlength="6" autocomplete="off" value=" " data-field="postageplus" name="number">
+                                                </td>
+                                                <td>
+                                                    <a class="J_DeleteRule" href="javascript:void(0);" onclick="changerule(this,false)">删除</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tbl-attach">
+                                    <div class="J_SpecialMessage"></div>
+                                    <a href="javascript:void(0);" onclick="changerule(this,true)" class="J_AddRule">为指定地区城市设置运费</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </li>
+
+                <!-- 包邮条件设置  -->
+                <li class="form-elem set-free" style="display: none;">
+                    <p class="free-title">
+                        <input type="checkbox" value="1" id="J_SetFree">
+                        <label for="J_SetFree">指定条件包邮(可选)</label>
+                    </p>
+                    <table class="table" style="display: none;">
+                        <colgroup>
+                            <col width="21%">
+                            <col width="16%">
+                            <col width="16%">
+                            <col width="32%">
+                            <col width="13%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>选择地区</th>
+                                <th>选择运送方式</th>
+                                <th>设置包邮条件</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="J_Tbody">
+                            <tr data-index="0">
+                                <td>
+                                    <a href="javascript:void('编辑')" onclick="CheckArea(this)" class="acc_popup edit J_Edit" title="编辑运送区域" data-areas="">编辑</a>
+                                    <div class="area-group">
+                                        <p class="area" id="incl0">
+                                            未添加地区
+                                        </p>
+                                    </div>
+                                    <input type="hidden" value="" name="inclpost">
+                                </td>
+                                <td>
+                                    <select name="transType" class="J_Service">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="J_ChageContion" name="designated" onchange="">
+                                        <option value="0" selected="selected">件数</option>
+                                        <option value="1">金额</option>
+                                        <option value="2">件数 + 金额</option>
+                                    </select>
+                                    <p class="free-contion">
+                                        <nobr>满<input type="text" value="" class="input-text " name="number" firstname="preferentialStandard"><em class="full_mode">件</em><em class="hidden">,<input type='text' class='input-text input-65' name='number' firstname='preferentialMoney'>元以上<em>包邮</nobr>
+                                    </p>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)" onclick="inclpostifcopy(this,true);" class="J_AddItem small-icon"></a>
+                                    <a href="javascript:void(0)" onclick="inclpostifcopy(this,false);" class="J_DelateItem small-icon"></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </li>
+            </ul>
+            <p class="btns">
+                <a class="t-button" onclick="SubmitTemplate()">保存并返回</a>
+                <a href="@Url.Action("index")" class="t-button">取消</a>
+            </p>
+        </form>
+    </div>
+</div>
+<!--地区弹窗-->
+<div id="area" mode="" class="dialog-areas hidden" role="dialog" aria-labelledby="ks-dialog-header1834" aria-hidden="true" tabindex="0">
+    <a class="ks-ext-close" style="z-index: 9" role="button" href="javascript:void(&quot;关闭&quot;)" tabindex="0" onclick="HideArea()"><span class="ks-ext-close-x">关闭</span></a>
+    <div class="">
+        <div class="ks-contentbox">
+            <div class="ks-stdmod-header" id="ks-dialog-header1834">
+                <div class="title">选择地区</div>
+            </div>
+            <div class="ks-stdmod-body">
+                <ul id="J_CityList">
+                    @if (Model != null)
+                    {
+                        <li>
+                            <select id="proselect" class="center">
+                                <option value="0">全国</option>
+                                @foreach (var item in Model.Provinces)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </li>
+                                foreach (var pro in Model.Provinces)
+                                {
+                        <li class="pro_@pro.Id hidden">
+                            <div class=" dcity clearfix">
+                                <div class="ecity gcity">
+                                    <span class="group-label">
+                                        <input type="checkbox" id="J_Group_@pro.Id" class="J_Group" value="@pro.Id">
+                                        <label for="J_Group_@pro.Id">@pro.Name</label>
+                                    </span>
+                                </div>
+                                <div class="province-list">
+                                    @foreach (var city in pro.Citys)
+                                    {
+                                        <div class="ecity" citysnum="1" selectednum="0">
+                                            <span class="gareas">
+                                                <input type="checkbox" class="J_Province" id="J_Province_@pro.Id-@city.Id" value="@pro.Id-@city.Id">
+                                                <label for="J_Province_@pro.Id-@city.Id">@city.Name</label>
+                                                <img src="~/Content/2014.211/images/yfmb_img06.gif" onclick="ShowCounty(this)" class="trigger">
+                                            </span>
+                                            <div class="citys">
+                                                @foreach (var str in city.Streets)
+                                                {
+                                                    <span class="areas">
+                                                        <input type="checkbox" class="J_City" id="J_City_@pro.Id-@city.Id-@str.Id" value="@pro.Id-@city.Id-@str.Id">
+                                                        <label for="J_City_@pro.Id-@city.Id-@str.Id">@str.Name</label>
+                                                    </span>
+                                                }
+                                                <p style="text-align: right;">
+                                                    <input type="button" class="close_button" onclick="HideCounty(this)" value="关闭">
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                                }
+                    }
+                </ul>
+                <div class="btns">
+                    <button class="J_Submit" type="button" onclick="AreaSure()">确定</button>
+                    <button class="J_Cancel" type="button" onclick="HideArea()">取消</button>
+                </div>
+            </div>
+            <div class="ks-stdmod-footer"></div>
+        </div>
+    </div>
+    <div style="position: absolute;" tabindex="0"></div>
+</div>

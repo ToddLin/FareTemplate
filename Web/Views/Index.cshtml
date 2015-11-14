@@ -1,0 +1,155 @@
+﻿@model FareTemplateListModel
+@using Nop.Admin.Models.FareTemplates
+@using Nop.Web.Extensions
+@{
+    ViewBag.Title = "运费模板";
+}
+<link href="~/Content/2014.211/style/yfmb.css" rel="stylesheet" type="text/css">
+<script src="~/Content/2014.211/js/yfmb.js" type="text/javascript"></script>
+@using (Html.BeginForm())
+{
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
+            运费模板
+        </div>
+        <div style="text-align: right">
+            <a href="@Url.Action("Create")" class="t-button">@T("Admin.Common.AddNew")</a>
+        </div>
+        <div class="manage-list">
+            @if (Model.FareTemplates != null && Model.FareTemplates.Count > 0)
+            {
+                foreach (var fareTemplate in Model.FareTemplates)
+                {
+                <div class="section J_Section">
+                    <div class="tbl-prefix">
+                        <span class="meta">
+                            <a href="javascript:void(0);" onclick="delfareTemplate('@fareTemplate.Id')" class="J_Delete">删除 </a>
+                        </span>
+                        @if (fareTemplate.IsInclPostageByif == true)
+                        {
+                            <h3 class="J_Title">@fareTemplate.Name (已指定条件包邮)</h3>
+                        }
+                        else
+                        {<h3 class="J_Title">@fareTemplate.Name</h3>}
+                    </div>
+                    @if (fareTemplate.CarryModes.Any())
+                    {
+                        <div class="tbl-head">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <colgroup>
+                                    <col class="col-express">
+                                    <col class="col-area">
+                                    <col class="col-starting">
+                                    <col class="col-postage">
+                                    <col class="col-plus">
+                                    <col class="col-postage">
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th>运送方式</th>
+                                        <th>运送到</th>
+                                        @if (fareTemplate.ValuationModel == 1)
+                                        {
+                                            <th>首件(个)
+                                            </th>
+                                            <th>运费(元)</th>
+                                            <th>续件(个)</th>
+                                        }
+                                        @if (fareTemplate.ValuationModel == 2)
+                                        {
+                                            <th>首重(kg)
+                                            </th>
+                                            <th>运费(元)</th>
+                                            <th>续重(kg)</th>
+                                        }
+                                        @if (fareTemplate.ValuationModel == 3)
+                                        {
+                                            <th>首体积(m³)
+                                            </th>
+                                            <th>运费(元)</th>
+                                            <th>续体积(m³)</th>
+                                        }
+                                        <th>运费(元)</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="entity">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <colgroup>
+                                    <col class="col-express">
+                                    <col class="col-area">
+                                    <col class="col-starting">
+                                    <col class="col-postage">
+                                    <col class="col-plus">
+                                    <col class="col-postage">
+                                </colgroup>
+                                <tbody>
+                                    @foreach (var m in fareTemplate.CarryModes)
+                                    {
+                                        <tr>
+                                            @switch (m.CarryWay)
+                                            {
+                                                case 0:
+                                                <td>赣农速运</td>
+                                                    break;
+                                                case 1:
+                                                <td>EMS</td>
+                                                    break;
+                                                case 2:
+                                                <td>快递</td>
+                                                    break;
+                                                default:
+                                                <td>赣农速运</td>
+                                                    break;
+                                            }
+                                            <td class="cell-area">@m.RegionList</td>
+
+                                            @if (m.FirstPiece.HasValue)
+                                            {
+                                                <td>@m.FirstPiece</td>
+                                            }
+                                            @if (m.FirstBulk.HasValue)
+                                            {
+                                                <td>@m.FirstBulk</td>
+                                            }
+                                            @if (m.FirstWeight.HasValue)
+                                            {
+                                                <td>@m.FirstWeight</td>
+                                            }
+                                            <td>@m.FirstAmount</td>
+                                            @if (m.SecondBulk.HasValue)
+                                            {
+                                                <td>@m.SecondBulk</td>
+                                            }
+                                            @if (m.SecondPiece.HasValue)
+                                            {
+                                                <td>@m.SecondPiece</td>
+                                            }
+                                            @if (m.SecondWeight.HasValue)
+                                            {
+                                                <td>@m.SecondWeight</td>
+                                            }
+                                            <td>@m.SecondAmount</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+                }
+                <div class="pages_btns" style="text-align: center">
+                    @Html.Pager(Model.PageFilterModel).QueryParam("pagenumber")
+                </div>
+            }
+            else
+            {
+                <div>您还没有设置运费模板！</div>
+            }
+        </div>
+    </div>
+
+    <p></p>
+}
